@@ -1,18 +1,127 @@
 <html>
   <head>
+    <title>We Chat</title>
+    <meta charset="utf-8">
   </head>
+
   <body>
     <script type="application/javascript">
-      // su código
-      const listaDeMensajes = document.createElement('ul')
+
+      document.addEventListener('click', () => {
+        fetch('http://ubeje.xyz:3000/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({sender: 'Ale Gudiel', message: document.getElementById('').value })
+      })
+      .then(res => res.json())
+      .then(() => listaDeMensajes)
+    })
+
+      //personalización del chat
+      document.body.style.cssText = "margin: 2; background-color: #b7b7a'; border: 2px; size: 300px 100px;";
+
+      //obtener los mensajes del server
+      const listaDeMensajes = document.createElement('div');
       document.body.append(listaDeMensajes)
 
-      fetch('http://ubeje.xyz:3000').then((r) => {
-          return r.json().then((j) => { 
-              
-          })
+      //menu superior
+      const tabSup = document.createElement('div');
+      tabSup.style.cssText = "height: 130px; width: 100%; background: #b7b7a4; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; "
+      tabSup.append('We Chat');
+      document.body.append(tabSup);
 
+      //menu inferior 
+      const tabInf = document.createElement('div');
+      tabInf.style.cssText = "height: 90px; width: 100%; background: #b7b7a4; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; flex-direction: column; "
+      document.body.append(tabInf);
+
+      //personalización del botón para enviar
+      const input = document.createElement('input')
+      
+      document.body.append('Enter your message ', input)  
+      input.maxLength = 140
+      input.style.cssText = 'border-radius: 25px; width: 80%; height: 40px';
+      input.id = 'input';
+      input.addEventListener("keyup", (event) =>{
+            if (event.keyCode === 13) {
+                submit
+            }
+        })
+
+      //enviar mensajes con boton
+      const button = document.createElement('button')
+      button.append('Send')
+      document.body.append(button)
+    
+
+
+    
+    let pos = " ";
+
+    //obtener la lista de mensajes del servidor y personalización de los mensajes
+      fetch('http://ubeje.xyz:3000/messages').then((r) => {
+          return r.json() 
+          }).then((j) => {
+            j.forEach(mensaje => {
+              const unMensaje = document.createElement('div')
+              const h3 = document.createElement('h3')
+              const p = document.createElement('p')
+
+              h3.append(mensaje.sender)
+              p.append(mensaje.message)
+
+              unMensaje.append(h3)
+              unMensaje.append(p)
+              unMensaje.style.width = '280px';
+              unMensaje.style.height = '80px';
+              unMensaje.style.margin = '40px';
+              unMensaje.style.background = '#cb997e';
+              unMensaje.style.borderRadius = '25px';
+              unMensaje.style.alignContent = 'center';
+              unMensaje.style.flexWrap = 'wrap';
+
+              listaDeMensajes.append(unMensaje)
+              
+            })
       } )
+
+      listaDeMensajes()
+        let intervalId = window.setInterval(function(){
+            pos = document.body.scrollTop
+            console.log(document.body.scrollTop)
+            mensajes.innerHTML = ""
+            arrayMensajes()
+        }, 5000);
+      
+    //  async function enviarMensaje() {
+    //    var inputTexto = input.value;
+    //    if (inputTexto != " ") {
+  //        var Texto = {
+   //         sender: "Ale Gudiel",
+   //         message: inputTexto
+   //       }
+  //        let respo = await fetch('http://ubeje.xyz:3000/messages', {
+    //        method: 'POST',
+  //          headers: { "Content-Type": "application/json" },
+ //           body: JSON.stringify(Texto)
+ //         });
+//          input.value = " ";
+ //       }
+  //      scroll.innerHTML = "";
+  //      obtener();
+  //    }
+   //   input.addEventListener("keyup", function(event) {
+   //     if (event.keyCode === 13) {
+    //      enviarMensaje();
+   //     }
+  //    })
+            
+
+
+
+      
     </script>
   </body>
 </html>
