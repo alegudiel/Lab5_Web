@@ -6,6 +6,14 @@
 
   <body>
     <script type="application/javascript">
+      //menu superior
+      const tabSup = document.createElement('h1');
+      tabSup.style.cssText = "height: 130px; width: 100%; background: #b7b7a4; color: #6b705c; align-items: center; diplay: flex; justify-content: center; display: flex; font-family: Georgia; "
+      tabSup.append('We Chat');
+      document.body.append(tabSup);
+
+      //personalización del chat
+      document.body.style.background = "#ffe8d6";
 
       document.addEventListener('click', () => {
         fetch('http://ubeje.xyz:3000/messages', {
@@ -13,36 +21,26 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({sender: 'Ale Gudiel', message: document.getElementById('').value })
+          body: JSON.stringify({sender: 'Ale Gudiel', message: input.value })
       })
       .then(res => res.json())
       .then(() => listaDeMensajes)
     })
 
-      //personalización del chat
-      document.body.style.cssText = "margin: 2; background-color: #b7b7a'; border: 2px; size: 300px 100px;";
-
       //obtener los mensajes del server
       const listaDeMensajes = document.createElement('div');
       document.body.append(listaDeMensajes)
 
-      //menu superior
-      const tabSup = document.createElement('div');
-      tabSup.style.cssText = "height: 130px; width: 100%; background: #b7b7a4; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; "
-      tabSup.append('We Chat');
-      document.body.append(tabSup);
-
       //menu inferior 
-      const tabInf = document.createElement('div');
-      tabInf.style.cssText = "height: 90px; width: 100%; background: #b7b7a4; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; flex-direction: column; "
-      document.body.append(tabInf);
+     // const tabInf = document.createElement('h3');
+     // tabInf.style.cssText = "height: 90px; width: 100%; background: red; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; flex-direction: column; "
+    //  document.body.append(tabInf);
 
       //personalización del botón para enviar
       const input = document.createElement('input')
-      
       document.body.append('Enter your message ', input)  
       input.maxLength = 140
-      input.style.cssText = 'border-radius: 25px; width: 80%; height: 40px';
+      input.style.cssText = 'border-radius: 15px; width: 70%; height: 40px; display: flex; border: #d4a373; background-color: #ffe8d6';
       input.id = 'input';
       input.addEventListener("keyup", (event) =>{
             if (event.keyCode === 13) {
