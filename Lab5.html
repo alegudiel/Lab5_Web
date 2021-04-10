@@ -1,3 +1,4 @@
+<!--Ale Gudiel 19232 -->
 <html>
   <head>
     <title>We Chat</title>
@@ -6,120 +7,144 @@
 
   <body>
     <script type="application/javascript">
+      document.body.style.backgroundColor = "#ffe8d6";
+
+      //la estructura para los elementos es la siguiente
+      //crear el elemento a usar
+      //personalizarlo
+      //agregarlo al body
+      
       //menu superior
       const tabSup = document.createElement('h1');
+      document.body.appendChild(tabSup);
       tabSup.style.cssText = "height: 130px; width: 100%; background: #b7b7a4; color: #6b705c; align-items: center; diplay: flex; justify-content: center; display: flex; font-family: Georgia; "
       tabSup.append('We Chat');
-      document.body.append(tabSup);
+      
 
-      //personalización del chat
-      document.body.style.background = "#ffe8d6";
+      //scroll para ver los mensajes
+      const scroll = document.createElement('content');
+      scroll.scrollIntoView();
+      document.body.appendChild(scroll);
+      scroll.style.cssText = "position: absolute; border-radius: 25px; color: black; background-color: #6b705c; width: 20px; height: 30px; overflowY: scroll; margin-left: 910px;"
 
-      document.addEventListener('click', () => {
-        fetch('http://ubeje.xyz:3000/messages', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({sender: 'Ale Gudiel', message: input.value })
-      })
-      .then(res => res.json())
-      .then(() => listaDeMensajes)
-    })
+      //personalización del espacio para enviar mensajes
+      const mensajesEnviar = document.createElement('input')
+      document.body.append(mensajesEnviar)  
+      mensajesEnviar.maxLength = 140
+      mensajesEnviar.style.cssText = 'margin-top: 70%; border-radius: 15px; width: 70%; height: 40px; display: flex; border: #d4a373; background: #b7b7a4; color: #6b705c;'
 
-      //obtener los mensajes del server
-      const listaDeMensajes = document.createElement('div');
-      document.body.append(listaDeMensajes)
+      //personalización del boton para enviar
+      const buttn = document.createElement('button')
+      document.body.append(buttn)
+      buttn.innerHTML = "Send";
+      buttn.style.cssText = "width: 80px; height: 40px; border-radius: 20px; color: white; background-color: #6b705c; border: none; margin-left: 70%;"
 
-      //menu inferior 
-     // const tabInf = document.createElement('h3');
-     // tabInf.style.cssText = "height: 90px; width: 100%; background: red; color: #ffe8d6; align-items: center; diplay: flex; justify-content: center; display: flex; flex-direction: column; "
-    //  document.body.append(tabInf);
+      //funcion para obtener los mensajes del servidor
+      getMensajes();
+      function getMensajes( ) {
+        fetch("http://ubeje.xyz:3000/messages").then(
+          response => response.json()).then(
+            response => {
+              const cajaMensajes = document.createElement("p");
+              localStorage.setItem('scroll', p.screenTop)
+              cajaMensajes.style.cssText = "margin-left: 50px; word-wrap: break-word; color: white; border-radius: 25px; text-align:left;"
 
-      //personalización del botón para enviar
-      const input = document.createElement('input')
-      document.body.append('Enter your message ', input)  
-      input.maxLength = 140
-      input.style.cssText = 'border-radius: 15px; width: 70%; height: 40px; display: flex; border: #d4a373; background-color: #ffe8d6';
-      input.id = 'input';
-      input.addEventListener("keyup", (event) =>{
-            if (event.keyCode === 13) {
-                submit
+              if( userSender.sender == "Ale Gudiel"){
+                cajaMensajes.style.cssText = "background-color: yellow; text-align: black; word-wrap: break-word";
+              }        
+              cajaMensajes.append(userSender.sender);      
+              scroll.appendChild(cajaMensajes);
+              scroll.scrollTop = scroll.scrollHeight; 
             }
-        })
 
-      //enviar mensajes con boton
-      const button = document.createElement('button')
-      button.append('Send')
-      document.body.append(button)
-    
+          )
+      }
 
+      //funcion para enviar los mensajes al servidor
+      //se extrajo el código visto en clase
+      async function enviarMensaje() {
+        var inputTexto = mensajesEnviar.value;
+        if (inputTexto != " ") {
+          var Texto = {
+            sender: "Ale Gudiel",
+            message: inputTexto
+          }
+        
+          let respo = await fetch('http://ubeje.xyz:3000/messages', {
+            method: 'POST',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(Texto)
+          });
+          mensajesEnviar.value = " ";
+        }
+        scroll.innerHTML = "";
+        getMensajes();
+      }
 
-    
-    let pos = " ";
+      //enviar usando enter
+      mensajesEnviar.addEventListener('keypress', (event) => {
+        if(event.key=='Enter')
+        {
+          getMensajes();
+          localStorage.setItem("scroll", mensajesEnviar.scrollTop);
+          fetch('http://ubeje.xyz:3000/messages', { 
+		method: 'POST',
+                headers: {
+                   'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  sender: "Ale Gudiel",
+                  message: mensajesEnviar.value,
+                  date: fecha + ' ' + hora,
+                })
+          }) 
+          setTimeout(() => {
+            location.reload(true);
+          }, 3000) 
+          getMensajes();
+          localStorage.setItem("scroll", mensajesEnviar.scrollTop)
+        }
+        
+      })
 
-    //obtener la lista de mensajes del servidor y personalización de los mensajes
-      fetch('http://ubeje.xyz:3000/messages').then((r) => {
-          return r.json() 
-          }).then((j) => {
-            j.forEach(mensaje => {
-              const unMensaje = document.createElement('div')
-              const h3 = document.createElement('h3')
-              const p = document.createElement('p')
+      //enviar el mensjae usando el boton
+      const dia = new Date();
+      const fecha = dia.getFullYear() + '-' + (dia.getMonth()+1) + '-' + (dia.getDate());
+      const hora = dia.getHours() + dia.getMinutes();
+      buttn.addEventListener("click", () => {
+        localStorage.setItem("scroll", mensajesEnviar.scrollTop)
+          fetch('http://ubeje.xyz:3000/messages', { 
+            method: 'POST',
+                headers: {
+                   'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  sender: "Ale Gudiel",
+                  message: enviarMensaje.value,
+                  date: fecha + ' ' + hora,
+                })
+          })
+          setTimeout(() => {
+            location.reload(true);
+          }, 3000) 
+          localStorage.setItem("scroll", mensajesEnviar.scrollTop)
+      }) 
 
-              h3.append(mensaje.sender)
-              p.append(mensaje.message)
+      //try para popder visualizar imagenes en los mensajes
+      var mens = mensajesEnviar.message;
+          try {
+            if(mens.match(/\.(jpeg|jpg|gif|bmp|tiff|png|svg)$/gi)){
+              url = mens;
+              imagen = document.createElement('img');
+              imagen.src = url;
+              imagen.style.height = '80%';
+              imagen.style.width = '40%';
+              unMensaje.append(imagen);
+            }
 
-              unMensaje.append(h3)
-              unMensaje.append(p)
-              unMensaje.style.width = '280px';
-              unMensaje.style.height = '80px';
-              unMensaje.style.margin = '40px';
-              unMensaje.style.background = '#cb997e';
-              unMensaje.style.borderRadius = '25px';
-              unMensaje.style.alignContent = 'center';
-              unMensaje.style.flexWrap = 'wrap';
+          } catch (e){
+          }
 
-              listaDeMensajes.append(unMensaje)
-              
-            })
-      } )
-
-      listaDeMensajes()
-        let intervalId = window.setInterval(function(){
-            pos = document.body.scrollTop
-            console.log(document.body.scrollTop)
-            mensajes.innerHTML = ""
-            arrayMensajes()
-        }, 5000);
-      
-    //  async function enviarMensaje() {
-    //    var inputTexto = input.value;
-    //    if (inputTexto != " ") {
-  //        var Texto = {
-   //         sender: "Ale Gudiel",
-   //         message: inputTexto
-   //       }
-  //        let respo = await fetch('http://ubeje.xyz:3000/messages', {
-    //        method: 'POST',
-  //          headers: { "Content-Type": "application/json" },
- //           body: JSON.stringify(Texto)
- //         });
-//          input.value = " ";
- //       }
-  //      scroll.innerHTML = "";
-  //      obtener();
-  //    }
-   //   input.addEventListener("keyup", function(event) {
-   //     if (event.keyCode === 13) {
-    //      enviarMensaje();
-   //     }
-  //    })
-            
-
-
-
-      
     </script>
   </body>
 </html>
